@@ -308,12 +308,8 @@ LRESULT CALLBACK BoardWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 
         for (int row = 0; row < currentGridSize; ++row)
         {
-            /*auto debugText = L"Row " + std::to_wstring(row) + L"\n";
-            OutputDebugStringW(debugText.c_str());*/
             for (int col = 0; col < currentGridSize; ++col)
             {
-                /* auto debugText2 = L"Column " + std::to_wstring(col) + L"\n";
-                 OutputDebugStringW(debugText2.c_str());*/
                 RECT rect = {
                     windowMargin + col * (cellSize + cellMargin),
                     windowMargin + row * (cellSize + cellMargin),
@@ -331,8 +327,6 @@ LRESULT CALLBACK BoardWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
                 SelectObject(hdc, oldBrush);
                 DeleteObject(hBrush);
 
-                /*auto debugText3 = L"Grid " + std::to_wstring(currentBoard.grid_size) + L"\n";
-                OutputDebugStringW(debugText3.c_str());*/
                 if (currentBoard.b_fields[row][col].type == field_state::ship and isPlayerBoard)
                 {
                     SetTextColor(hdc, RGB(0, 0, 0));
@@ -415,6 +409,20 @@ LRESULT CALLBACK BoardWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
                               rect.bottom,
                               10,
                               10);
+                    SelectObject(hdc, oldBrush);
+                    DeleteObject(hBrush);
+                }
+                else if (currentBoard.b_fields[row][col].type == field_state::testing)
+                {
+                    HBRUSH hBrush = CreateSolidBrush(RGB(255, 0, 255));
+                    HGDIOBJ oldBrush = SelectObject(hdc, hBrush);
+                    RoundRect(hdc,
+                        rect.left,
+                        rect.top,
+                        rect.right,
+                        rect.bottom,
+                        10,
+                        10);
                     SelectObject(hdc, oldBrush);
                     DeleteObject(hBrush);
                 }

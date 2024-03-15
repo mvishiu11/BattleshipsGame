@@ -9,7 +9,8 @@ enum class field_state
 	ship,
 	miss,
 	hit,
-	neutral
+	neutral,
+	testing
 };
 
 enum class ship_type
@@ -55,7 +56,7 @@ public:
 	board(int size);
 	~board();
 	void change_size(int new_size);
-	bool check_edges(int row, int column, ship* ship_to_place, int direction);
+	bool check_if_viable(int row, int column, ship* ship_to_place, int direction);
 	void place_ship(ship* ship_to_place, int i);
 	void set_neighbours(ship* s);
 	void place_ships();
