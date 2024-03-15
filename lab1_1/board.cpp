@@ -352,10 +352,6 @@ void board::set_neighbours(ship* s)
 				{
 					b_fields[i][j + 1].type = field_state::neutral;
 				}
-				if (j < grid_size - 1 and i < grid_size - 1 and b_fields[i + 1][j + 1].type == field_state::empty)
-				{
-					b_fields[i][j + 1].type = field_state::neutral;
-				}
 				if (j > 0 and i > 0 and b_fields[i - 1][j - 1].type == field_state::empty)
 				{
 					b_fields[i - 1][j - 1].type = field_state::neutral;
