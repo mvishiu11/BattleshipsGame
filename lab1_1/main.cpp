@@ -90,8 +90,8 @@ void ChangeGridSize(HWND hwndMain, int gridSize)
 
     int newWidth = totalWidth;
     int newHeight = totalHeight;
-    MoveWindow(hwndChild1, screenWidth - newWidth, 100, newWidth, newHeight, TRUE);
-    MoveWindow(hwndChild2, 10, 100, newWidth, newHeight, TRUE);
+    MoveWindow(hwndChild2, screenWidth - newWidth, 100, newWidth, newHeight, TRUE);
+    MoveWindow(hwndChild1, 10, 100, newWidth, newHeight, TRUE);
 
     InvalidateRect(hwndChild1, NULL, TRUE);
     InvalidateRect(hwndChild2, NULL, TRUE);
@@ -171,15 +171,21 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
         HDC hdc = BeginPaint(hwnd, &ps);
         ship **player_ships = board1.ships;
         ship **pc_ships = board2.ships;
+        int stat_w_margin = 10;
+        int stat_cell_x = 30;
+        int stat_cell_y = 10;
+        int stat_cell_margin = 3;
+        int offset = 300;
         for (int i = 0; i < 10; i++)
         {
             for (int j = 0; j < player_ships[i]->size; j++)
             {
-                RECT rect = {
-                    windowMargin + j * (cellSize + cellMargin),
-                    windowMargin + i * (cellSize + cellMargin) / 2,
-                    windowMargin + (j + 1) * cellSize + j * cellMargin,
-                    windowMargin + (i + 1) * cellSize + i * cellMargin / 2};
+                RECT rect {
+                    stat_w_margin + j * (stat_cell_x + stat_cell_margin),
+					stat_w_margin + i * (stat_cell_y + stat_cell_margin),
+					stat_w_margin + (j + 1) * stat_cell_x + j * stat_cell_margin,
+					stat_w_margin + (i + 1) * stat_cell_y + i * stat_cell_margin
+				};
 
                 COLORREF color = j >= player_ships[i]->hits ? RGB(0, 0, 255) : RGB(255, 0, 0);
 
@@ -200,11 +206,12 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
         {
             for (int j = 0; j < pc_ships[i]->size; j++)
             {
-                RECT rect = {
-                    windowMargin + j * (cellSize + cellMargin) + 300,
-                    windowMargin + i * (cellSize + cellMargin) / 2,
-                    windowMargin + (j + 1) * cellSize + j * cellMargin + 300,
-                    windowMargin + (i + 1) * cellSize + i * cellMargin / 2};
+                RECT rect{
+                   stat_w_margin + j * (stat_cell_x + stat_cell_margin) + offset,
+                   stat_w_margin + i * (stat_cell_y + stat_cell_margin),
+                   stat_w_margin + (j + 1) * stat_cell_x + j * stat_cell_margin + offset,
+                   stat_w_margin + (i + 1) * stat_cell_y + i * stat_cell_margin
+                };
 
                 COLORREF color = j >= pc_ships[i]->hits ? RGB(0, 0, 255) : RGB(255, 0, 0);
 
@@ -221,7 +228,9 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
                 DeleteObject(hBrush);
             }
         }
+        EndPaint(hwnd, &ps);
     }
+    break;
     default:
         return DefWindowProc(hwnd, msg, wParam, lParam);
     }
