@@ -1,4 +1,4 @@
-#include <windows.h>
+﻿#include <windows.h>
 #include "framework.h"
 #include "Resource.h"
 #include <wingdi.h>
@@ -278,6 +278,7 @@ LRESULT CALLBACK BoardWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
             }
         }
 
+        srand(time(NULL));
         int pc_x = rand() % currentGridSize;
         int pc_y = rand() % currentGridSize;
 
@@ -338,17 +339,45 @@ LRESULT CALLBACK BoardWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 
                 if (currentBoard.b_fields[row][col].type == field_state::ship and isPlayerBoard)
                 {
-                    SetTextColor(hdc, RGB(0, 0, 0));
+                    ship_type shipType = currentBoard.b_fields[row][col].get_ship_type();
+
+                    LPCWSTR shipTypeStr;
+                    COLORREF shipColor;
+
+                    switch (shipType)
+                    {
+                    case ship_type::carrier:
+                        shipTypeStr = L"⛴️";
+                        shipColor = RGB(255, 100, 100);
+                        break;
+                    case ship_type::battleship:
+                        shipTypeStr = L"🛳";
+                        shipColor = RGB(100, 255, 100);
+                        break;
+                    case ship_type::cruiser:
+                        shipTypeStr = L"🛥️";
+                        shipColor = RGB(100, 100, 255);
+                        break;
+                    case ship_type::destroyer:
+                        shipTypeStr = L"🚤";
+                        shipColor = RGB(255, 255, 100);
+                        break;
+                    default:
+                        shipTypeStr = L"❓";
+                        shipColor = RGB(0, 0, 0);
+                        break;
+                    }
+
+                    SetTextColor(hdc, shipColor);
                     SetBkMode(hdc, TRANSPARENT);
-                    HFONT hFont = CreateFont(-MulDiv(10, GetDeviceCaps(hdc, LOGPIXELSY), 72), 0, 0, 0, FW_NORMAL,
+                    HFONT hFont = CreateFont(-MulDiv(24, GetDeviceCaps(hdc, LOGPIXELSY), 72), 0, 0, 0, FW_NORMAL,
                                              FALSE, FALSE, FALSE, DEFAULT_CHARSET, OUT_OUTLINE_PRECIS,
                                              CLIP_DEFAULT_PRECIS, CLEARTYPE_QUALITY, VARIABLE_PITCH, TEXT("Arial"));
                     HGDIOBJ oldFont = SelectObject(hdc, hFont);
 
-                    ship_type shipType = currentBoard.b_fields[row][col].get_ship_type();
-
                     WCHAR cellText[10];
-                    wsprintf(cellText, L"%d", shipType);
+
+                    wsprintf(cellText, shipTypeStr, shipType);
 
                     DrawText(hdc, cellText, -1, &rect, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
 
@@ -357,7 +386,7 @@ LRESULT CALLBACK BoardWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
                 }
                 else if (currentBoard.b_fields[row][col].type == field_state::miss)
                 {
-                    HBRUSH hBrush = CreateSolidBrush(RGB(0, 160, 255));
+                    HBRUSH hBrush = CreateSolidBrush(bgColor);
                     HGDIOBJ oldBrush = SelectObject(hdc, hBrush);
                     RoundRect(hdc,
                               rect.left,
@@ -369,21 +398,21 @@ LRESULT CALLBACK BoardWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
                     SelectObject(hdc, oldBrush);
                     DeleteObject(hBrush);
 
-                    SetTextColor(hdc, RGB(0, 0, 0));
+                    SetTextColor(hdc, RGB(0, 160, 255));
                     SetBkMode(hdc, TRANSPARENT);
-                    HFONT hFont = CreateFont(-MulDiv(12, GetDeviceCaps(hdc, LOGPIXELSY), 72), 0, 0, 0, FW_BOLD,
+                    HFONT hFont = CreateFont(-MulDiv(24, GetDeviceCaps(hdc, LOGPIXELSY), 100), 0, 0, 0, 1000,
                                              FALSE, FALSE, FALSE, DEFAULT_CHARSET, OUT_OUTLINE_PRECIS,
                                              CLIP_DEFAULT_PRECIS, CLEARTYPE_QUALITY, VARIABLE_PITCH, TEXT("Arial"));
                     HGDIOBJ oldFont = SelectObject(hdc, hFont);
 
-                    DrawText(hdc, L".", -1, &rect, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+                    DrawText(hdc, L"🌊", -1, &rect, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
 
                     SelectObject(hdc, oldFont);
                     DeleteObject(hFont);
                 }
                 else if (currentBoard.b_fields[row][col].type == field_state::hit)
                 {
-                    HBRUSH hBrush = CreateSolidBrush(RGB(255, 5, 0));
+                    HBRUSH hBrush = CreateSolidBrush(bgColor);
                     HGDIOBJ oldBrush = SelectObject(hdc, hBrush);
                     RoundRect(hdc,
                               rect.left,
@@ -395,14 +424,14 @@ LRESULT CALLBACK BoardWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
                     SelectObject(hdc, oldBrush);
                     DeleteObject(hBrush);
 
-                    SetTextColor(hdc, RGB(0, 0, 0));
+                    SetTextColor(hdc, RGB(255, 10, 0));
                     SetBkMode(hdc, TRANSPARENT);
-                    HFONT hFont = CreateFont(-MulDiv(12, GetDeviceCaps(hdc, LOGPIXELSY), 72), 0, 0, 0, FW_BOLD,
+                    HFONT hFont = CreateFont(-MulDiv(24, GetDeviceCaps(hdc, LOGPIXELSY), 72), 0, 0, 0, 1000,
                                              FALSE, FALSE, FALSE, DEFAULT_CHARSET, OUT_OUTLINE_PRECIS,
                                              CLIP_DEFAULT_PRECIS, CLEARTYPE_QUALITY, VARIABLE_PITCH, TEXT("Arial"));
                     HGDIOBJ oldFont = SelectObject(hdc, hFont);
 
-                    DrawText(hdc, L"X", -1, &rect, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+                    DrawText(hdc, L"💥", -1, &rect, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
 
                     SelectObject(hdc, oldFont);
                     DeleteObject(hFont);
@@ -441,9 +470,9 @@ LRESULT CALLBACK BoardWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
         if (gameOver)
         {
             bool winner = false;
-            if (hwnd == hwndChild1 and winnerBoard == 1)
+            if (hwnd == hwndChild2 and winnerBoard == 1)
                 winner = true;
-            if (hwnd == hwndChild2 and winnerBoard == 2)
+            if (hwnd == hwndChild1 and winnerBoard == 2)
                 winner = true;
             OutputDebugString(L"Game Over\n");
             RECT rect;

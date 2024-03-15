@@ -204,6 +204,7 @@ bool board::check_if_viable(int row, int column, ship* ship_to_place, int direct
 void board::place_ship(ship* ship_to_place, int i)
 {
 	this->ships[i] = ship_to_place;
+	srand(time(NULL));
 	int random_row = rand() % grid_size;
 	int random_column = rand() % grid_size;
 	int random_direction = rand() % 2;
