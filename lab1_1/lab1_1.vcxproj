@@ -130,7 +130,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />
-    <ClInclude Include="battleships.h" />
     <ClInclude Include="board.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="setup.h" />
@@ -138,7 +137,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="battleships.cpp" />
     <ClCompile Include="board.cpp" />
   </ItemGroup>
   <ItemGroup>

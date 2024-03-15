@@ -132,7 +132,7 @@ int ship::get_hits()
 	return hits;
 }
 
-bool board::check_edges(int row, int column, ship* ship_to_place, int direction)
+bool board::check_if_viable(int row, int column, ship* ship_to_place, int direction)
 {
 	if (direction == 0) {
 		if (column > 0) {
@@ -236,7 +236,7 @@ void board::place_ship(ship* ship_to_place, int i)
 						}
 					}
 				}
-				is_valid = is_valid && check_edges(random_row, random_column, ship_to_place, random_direction) && is_valid;
+				is_valid = is_valid && check_if_viable(random_row, random_column, ship_to_place, random_direction) && is_valid;
 				if (is_valid) {
 					for (int i = 0; i < ship_to_place->size; ++i) {
 						b_fields[random_row + i][random_column].s = ship_to_place;
@@ -272,7 +272,7 @@ void board::place_ship(ship* ship_to_place, int i)
 						}
 					}
 				}
-				is_valid = is_valid && check_edges(random_row, random_column, ship_to_place, random_direction);
+				is_valid = is_valid && check_if_viable(random_row, random_column, ship_to_place, random_direction);
 				if (is_valid) {
 					for (int i = 0; i < ship_to_place->size; ++i) {
 						b_fields[random_row][random_column + i].s = ship_to_place;

@@ -49,10 +49,10 @@ const int windowMargin = 5;
 int boardWidth = windowMargin * 2 + gridSize * cellSize + (gridSize - 1) * cellMargin;
 int boardHeight = windowMargin * 2 + gridSize * cellSize + (gridSize - 1) * cellMargin;
 
-void computeBoardSize(int gridSize, int cellSize, int cellMargin, int windowMargin, int& boardWidth, int& boardHeight)
+void computeBoardSize(int gridSize, int cellSize, int cellMargin, int windowMargin, int &boardWidth, int &boardHeight)
 {
-	boardWidth = windowMargin * 2 + currentGridSize * cellSize + (currentGridSize - 1) * cellMargin;
-	boardHeight = windowMargin * 2 + currentGridSize * cellSize + (currentGridSize - 1) * cellMargin;
+    boardWidth = windowMargin * 2 + currentGridSize * cellSize + (currentGridSize - 1) * cellMargin;
+    boardHeight = windowMargin * 2 + currentGridSize * cellSize + (currentGridSize - 1) * cellMargin;
 }
 
 /*
@@ -91,7 +91,7 @@ void ChangeGridSize(HWND hwndMain, int gridSize)
     int newWidth = totalWidth;
     int newHeight = totalHeight;
     MoveWindow(hwndChild1, screenWidth - newWidth, 100, newWidth, newHeight, TRUE);
-    MoveWindow(hwndChild2,  10, 100, newWidth, newHeight, TRUE);
+    MoveWindow(hwndChild2, 10, 100, newWidth, newHeight, TRUE);
 
     InvalidateRect(hwndChild1, NULL, TRUE);
     InvalidateRect(hwndChild2, NULL, TRUE);
@@ -113,26 +113,26 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
         case ID_EASY:
             ChangeGridSize(hwnd, 10);
             OutputDebugString(L"Easy set\n");
-            WritePrivateProfileString(L"Settings",  // section name
-                L"Difficulty",                      // key name
-                L"Easy",                            // value to write
-                iniFilePath);                       // INI file name
+            WritePrivateProfileString(L"Settings",   // section name
+                                      L"Difficulty", // key name
+                                      L"Easy",       // value to write
+                                      iniFilePath);  // INI file name
             break;
         case ID_MEDIUM:
             ChangeGridSize(hwnd, 15);
             OutputDebugString(L"Medium set\n");
             WritePrivateProfileString(L"Settings",
-                                      L"Difficulty",                     
-                                      L"Medium",                          
-                                      iniFilePath);            
+                                      L"Difficulty",
+                                      L"Medium",
+                                      iniFilePath);
             break;
         case ID_HARD:
             ChangeGridSize(hwnd, 20);
             OutputDebugString(L"Hard set\n");
             WritePrivateProfileString(L"Settings",
-                				      L"Difficulty",
-                				      L"Hard",
-                				      iniFilePath);
+                                      L"Difficulty",
+                                      L"Hard",
+                                      iniFilePath);
             break;
 
         case ID_GAME_OVER:
@@ -154,7 +154,8 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
         switch (wParam)
         {
         case ID_TIMER:
-            if (timerRunning) {
+            if (timerRunning)
+            {
                 auto currentTime = std::chrono::steady_clock::now();
                 auto elapsedTime = currentTime - startTime;
                 auto mseconds = std::chrono::duration_cast<std::chrono::duration<float>>(elapsedTime).count();
@@ -168,56 +169,54 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
     {
         PAINTSTRUCT ps;
         HDC hdc = BeginPaint(hwnd, &ps);
-        ship** player_ships = board1.ships;
-        ship** pc_ships = board2.ships;
+        ship **player_ships = board1.ships;
+        ship **pc_ships = board2.ships;
         for (int i = 0; i < 10; i++)
         {
             for (int j = 0; j < player_ships[i]->size; j++)
             {
                 RECT rect = {
-                windowMargin + j * (cellSize + cellMargin),
-                windowMargin + i * (cellSize + cellMargin) / 2,
-                windowMargin + (j + 1) * cellSize + j * cellMargin,
-                windowMargin + (i + 1) * cellSize + i * cellMargin / 2
-                };
+                    windowMargin + j * (cellSize + cellMargin),
+                    windowMargin + i * (cellSize + cellMargin) / 2,
+                    windowMargin + (j + 1) * cellSize + j * cellMargin,
+                    windowMargin + (i + 1) * cellSize + i * cellMargin / 2};
 
                 COLORREF color = j >= player_ships[i]->hits ? RGB(0, 0, 255) : RGB(255, 0, 0);
 
-				HBRUSH hBrush = CreateSolidBrush(color);
-				HGDIOBJ oldBrush = SelectObject(hdc, hBrush);
-				RoundRect(hdc,      
-                    					rect.left,	    
-                    					rect.top,	    
-                    					rect.right,	    
-                    					rect.bottom,    
-                    					10,             
-                    					10);            
-				SelectObject(hdc, oldBrush);
-				DeleteObject(hBrush);
-			}
+                HBRUSH hBrush = CreateSolidBrush(color);
+                HGDIOBJ oldBrush = SelectObject(hdc, hBrush);
+                RoundRect(hdc,
+                          rect.left,
+                          rect.top,
+                          rect.right,
+                          rect.bottom,
+                          10,
+                          10);
+                SelectObject(hdc, oldBrush);
+                DeleteObject(hBrush);
+            }
         }
         for (int i = 0; i < 10; i++)
         {
             for (int j = 0; j < pc_ships[i]->size; j++)
             {
                 RECT rect = {
-				windowMargin + j * (cellSize + cellMargin) + 300,
-				windowMargin + i * (cellSize + cellMargin) / 2,
-				windowMargin + (j + 1) * cellSize + j * cellMargin + 300,
-				windowMargin + (i + 1) * cellSize + i * cellMargin / 2
-				};
+                    windowMargin + j * (cellSize + cellMargin) + 300,
+                    windowMargin + i * (cellSize + cellMargin) / 2,
+                    windowMargin + (j + 1) * cellSize + j * cellMargin + 300,
+                    windowMargin + (i + 1) * cellSize + i * cellMargin / 2};
 
-                COLORREF color = j >= pc_ships[i]->hits ? RGB(0, 0, 255) : RGB(255, 0,0);
+                COLORREF color = j >= pc_ships[i]->hits ? RGB(0, 0, 255) : RGB(255, 0, 0);
 
                 HBRUSH hBrush = CreateSolidBrush(color);
                 HGDIOBJ oldBrush = SelectObject(hdc, hBrush);
                 RoundRect(hdc,
-                    rect.left,
-                    rect.top,
-                    rect.right,
-                    rect.bottom,
-                    10,
-                    10);
+                          rect.left,
+                          rect.top,
+                          rect.right,
+                          rect.bottom,
+                          10,
+                          10);
                 SelectObject(hdc, oldBrush);
                 DeleteObject(hBrush);
             }
@@ -243,9 +242,10 @@ LRESULT CALLBACK BoardWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 
         if (row >= 0 && row < currentGridSize && col >= 0 && col < currentGridSize)
         {
-            board& currentBoard = hwnd == hwndChild1 ? board1 : board2;
+            board &currentBoard = hwnd == hwndChild1 ? board1 : board2;
             bool curren = hwnd == hwndChild1;
-            if (curren) break;
+            if (curren)
+                break;
             if (currentBoard.b_fields[row][col].type == field_state::empty)
             {
                 currentBoard.b_fields[row][col].type = field_state::miss;
@@ -253,40 +253,40 @@ LRESULT CALLBACK BoardWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
             else if (currentBoard.b_fields[row][col].type == field_state::ship)
             {
                 currentBoard.b_fields[row][col].s->hit();
-                currentBoard.b_fields[row][col].type = field_state::hit;   
+                currentBoard.b_fields[row][col].type = field_state::hit;
                 auto str = L"Ship hit: " + std::to_wstring(currentBoard.b_fields[row][col].s->hits) + L"/" + std::to_wstring(currentBoard.b_fields[row][col].s->size) + L"\n";
                 OutputDebugString(str.c_str());
                 if (currentBoard.b_fields[row][col].s->is_sunk())
                 {
                     OutputDebugString(L"Ship sunk\n");
-					currentBoard.set_neighbours(currentBoard.b_fields[row][col].s);
-				}
+                    currentBoard.set_neighbours(currentBoard.b_fields[row][col].s);
+                }
             }
             if (currentBoard.check_win())
             {
-				gameOver = true;
-				winnerBoard = hwnd == hwndChild1 ? 2 : 1;
-			}
+                gameOver = true;
+                winnerBoard = hwnd == hwndChild1 ? 2 : 1;
+            }
         }
 
         int pc_x = rand() % currentGridSize;
         int pc_y = rand() % currentGridSize;
 
-        board& pcBoard = hwnd == hwndChild1 ? board2 : board1;
+        board &pcBoard = hwnd == hwndChild1 ? board2 : board1;
 
         if (pcBoard.b_fields[pc_x][pc_y].type == field_state::empty)
         {
-			pcBoard.b_fields[pc_x][pc_y].type = field_state::miss;
-		}
+            pcBoard.b_fields[pc_x][pc_y].type = field_state::miss;
+        }
         else if (pcBoard.b_fields[pc_x][pc_y].type == field_state::ship)
         {
-			pcBoard.b_fields[pc_x][pc_y].s->hit();
-			pcBoard.b_fields[pc_x][pc_y].type = field_state::hit;
+            pcBoard.b_fields[pc_x][pc_y].s->hit();
+            pcBoard.b_fields[pc_x][pc_y].type = field_state::hit;
             if (pcBoard.b_fields[pc_x][pc_y].s->is_sunk())
             {
-				pcBoard.set_neighbours(pcBoard.b_fields[pc_x][pc_y].s);
-			}
-		}
+                pcBoard.set_neighbours(pcBoard.b_fields[pc_x][pc_y].s);
+            }
+        }
         if (pcBoard.check_win())
         {
             gameOver = true;
@@ -312,23 +312,22 @@ LRESULT CALLBACK BoardWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
             OutputDebugStringW(debugText.c_str());*/
             for (int col = 0; col < currentGridSize; ++col)
             {
-               /* auto debugText2 = L"Column " + std::to_wstring(col) + L"\n";
-                OutputDebugStringW(debugText2.c_str());*/
+                /* auto debugText2 = L"Column " + std::to_wstring(col) + L"\n";
+                 OutputDebugStringW(debugText2.c_str());*/
                 RECT rect = {
                     windowMargin + col * (cellSize + cellMargin),
                     windowMargin + row * (cellSize + cellMargin),
                     windowMargin + (col + 1) * cellSize + col * cellMargin,
-                    windowMargin + (row + 1) * cellSize + row * cellMargin
-                };
+                    windowMargin + (row + 1) * cellSize + row * cellMargin};
                 HBRUSH hBrush = CreateSolidBrush(bgColor);
                 HGDIOBJ oldBrush = SelectObject(hdc, hBrush);
-                RoundRect(hdc,      // Handle to the device context
-                    rect.left,	    // x-coordinate of the upper-left corner of the rectangle
-                    rect.top,	    // y-coordinate of the upper-left corner of the rectangle
-                    rect.right,	    // x-coordinate of the lower-right corner of the rectangle
-                    rect.bottom,    // y-coordinate of the lower-right corner of the rectangle
-                    10,             // Width of the ellipse used to create the rounded corners
-                    10);            // Height of the ellipse used to create the rounded corners
+                RoundRect(hdc,         // Handle to the device context
+                          rect.left,   // x-coordinate of the upper-left corner of the rectangle
+                          rect.top,    // y-coordinate of the upper-left corner of the rectangle
+                          rect.right,  // x-coordinate of the lower-right corner of the rectangle
+                          rect.bottom, // y-coordinate of the lower-right corner of the rectangle
+                          10,          // Width of the ellipse used to create the rounded corners
+                          10);         // Height of the ellipse used to create the rounded corners
                 SelectObject(hdc, oldBrush);
                 DeleteObject(hBrush);
 
@@ -339,8 +338,8 @@ LRESULT CALLBACK BoardWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
                     SetTextColor(hdc, RGB(0, 0, 0));
                     SetBkMode(hdc, TRANSPARENT);
                     HFONT hFont = CreateFont(-MulDiv(10, GetDeviceCaps(hdc, LOGPIXELSY), 72), 0, 0, 0, FW_NORMAL,
-                        FALSE, FALSE, FALSE, DEFAULT_CHARSET, OUT_OUTLINE_PRECIS,
-                        CLIP_DEFAULT_PRECIS, CLEARTYPE_QUALITY, VARIABLE_PITCH, TEXT("Arial"));
+                                             FALSE, FALSE, FALSE, DEFAULT_CHARSET, OUT_OUTLINE_PRECIS,
+                                             CLIP_DEFAULT_PRECIS, CLEARTYPE_QUALITY, VARIABLE_PITCH, TEXT("Arial"));
                     HGDIOBJ oldFont = SelectObject(hdc, hFont);
 
                     ship_type shipType = currentBoard.b_fields[row][col].get_ship_type();
@@ -357,21 +356,21 @@ LRESULT CALLBACK BoardWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
                 {
                     HBRUSH hBrush = CreateSolidBrush(RGB(0, 160, 255));
                     HGDIOBJ oldBrush = SelectObject(hdc, hBrush);
-                    RoundRect(hdc,      
-                        rect.left,	   
-                        rect.top,	    
-                        rect.right,	   
-                        rect.bottom,   
-                        10,             
-                        10);           
+                    RoundRect(hdc,
+                              rect.left,
+                              rect.top,
+                              rect.right,
+                              rect.bottom,
+                              10,
+                              10);
                     SelectObject(hdc, oldBrush);
                     DeleteObject(hBrush);
 
                     SetTextColor(hdc, RGB(0, 0, 0));
                     SetBkMode(hdc, TRANSPARENT);
                     HFONT hFont = CreateFont(-MulDiv(12, GetDeviceCaps(hdc, LOGPIXELSY), 72), 0, 0, 0, FW_BOLD,
-                        FALSE, FALSE, FALSE, DEFAULT_CHARSET, OUT_OUTLINE_PRECIS,
-                        CLIP_DEFAULT_PRECIS, CLEARTYPE_QUALITY, VARIABLE_PITCH, TEXT("Arial"));
+                                             FALSE, FALSE, FALSE, DEFAULT_CHARSET, OUT_OUTLINE_PRECIS,
+                                             CLIP_DEFAULT_PRECIS, CLEARTYPE_QUALITY, VARIABLE_PITCH, TEXT("Arial"));
                     HGDIOBJ oldFont = SelectObject(hdc, hFont);
 
                     DrawText(hdc, L".", -1, &rect, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
@@ -383,21 +382,21 @@ LRESULT CALLBACK BoardWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
                 {
                     HBRUSH hBrush = CreateSolidBrush(RGB(255, 5, 0));
                     HGDIOBJ oldBrush = SelectObject(hdc, hBrush);
-                    RoundRect(hdc,      
-                        rect.left,	    
-                        rect.top,	   
-                        rect.right,	   
-                        rect.bottom,    
-                        10,            
-                        10);          
+                    RoundRect(hdc,
+                              rect.left,
+                              rect.top,
+                              rect.right,
+                              rect.bottom,
+                              10,
+                              10);
                     SelectObject(hdc, oldBrush);
                     DeleteObject(hBrush);
 
                     SetTextColor(hdc, RGB(0, 0, 0));
                     SetBkMode(hdc, TRANSPARENT);
                     HFONT hFont = CreateFont(-MulDiv(12, GetDeviceCaps(hdc, LOGPIXELSY), 72), 0, 0, 0, FW_BOLD,
-                        FALSE, FALSE, FALSE, DEFAULT_CHARSET, OUT_OUTLINE_PRECIS,
-                        CLIP_DEFAULT_PRECIS, CLEARTYPE_QUALITY, VARIABLE_PITCH, TEXT("Arial"));
+                                             FALSE, FALSE, FALSE, DEFAULT_CHARSET, OUT_OUTLINE_PRECIS,
+                                             CLIP_DEFAULT_PRECIS, CLEARTYPE_QUALITY, VARIABLE_PITCH, TEXT("Arial"));
                     HGDIOBJ oldFont = SelectObject(hdc, hFont);
 
                     DrawText(hdc, L"X", -1, &rect, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
@@ -407,33 +406,35 @@ LRESULT CALLBACK BoardWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
                 }
                 else if (currentBoard.b_fields[row][col].type == field_state::neutral)
                 {
-					HBRUSH hBrush = CreateSolidBrush(RGB(255, 255, 0));
-					HGDIOBJ oldBrush = SelectObject(hdc, hBrush);
-					RoundRect(hdc,      
-                        						rect.left,	    
-                        						rect.top,	   
-                        						rect.right,	   
-                        						rect.bottom,    
-                        						10,            
-                        						10);          
-					SelectObject(hdc, oldBrush);
-					DeleteObject(hBrush);
-				}
+                    HBRUSH hBrush = CreateSolidBrush(RGB(255, 255, 0));
+                    HGDIOBJ oldBrush = SelectObject(hdc, hBrush);
+                    RoundRect(hdc,
+                              rect.left,
+                              rect.top,
+                              rect.right,
+                              rect.bottom,
+                              10,
+                              10);
+                    SelectObject(hdc, oldBrush);
+                    DeleteObject(hBrush);
+                }
             }
         }
 
         if (gameOver)
         {
             bool winner = false;
-            if(hwnd == hwndChild1 and winnerBoard == 1) winner = true;
-            if(hwnd == hwndChild2 and winnerBoard == 2) winner = true;
+            if (hwnd == hwndChild1 and winnerBoard == 1)
+                winner = true;
+            if (hwnd == hwndChild2 and winnerBoard == 2)
+                winner = true;
             OutputDebugString(L"Game Over\n");
             RECT rect;
             GetClientRect(hwnd, &rect);
 
             COLORREF overlayColor = winner ? RGB(0, 255, 0) : RGB(255, 0, 0);
             LPCWSTR overlayText = winner ? L"You Win!" : L"Game Over";
- 
+
             HBRUSH hBrush = CreateSolidBrush(overlayColor);
             HBITMAP hBitmap = CreateCompatibleBitmap(hdc, rect.right, rect.bottom);
             HDC hdcMem = CreateCompatibleDC(hdc);
@@ -452,10 +453,10 @@ LRESULT CALLBACK BoardWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
             SetBkMode(hdc, TRANSPARENT);
             SetTextColor(hdc, RGB(255, 255, 255));
 
-            int nHeight = -MulDiv(24, GetDeviceCaps(hdc, LOGPIXELSY), 72);      // Converts point size to logical units based on DPI
+            int nHeight = -MulDiv(24, GetDeviceCaps(hdc, LOGPIXELSY), 72); // Converts point size to logical units based on DPI
             HFONT hFont = CreateFont(nHeight, 0, 0, 0, FW_BOLD, FALSE, FALSE, FALSE, DEFAULT_CHARSET,
-                OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY,
-                DEFAULT_PITCH | FF_SWISS, L"Arial");
+                                     OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY,
+                                     DEFAULT_PITCH | FF_SWISS, L"Arial");
 
             HFONT hOldFont = (HFONT)SelectObject(hdc, hFont);
 
@@ -473,7 +474,8 @@ LRESULT CALLBACK BoardWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
         break;
 
         EndPaint(hwnd, &ps);
-    } break;
+    }
+    break;
     default:
         return DefWindowProc(hwnd, msg, wParam, lParam);
     }
@@ -481,7 +483,7 @@ LRESULT CALLBACK BoardWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 }
 
 int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance,
-    _In_ LPSTR lpCmdLine, _In_ int nCmdShow)
+                   _In_ LPSTR lpCmdLine, _In_ int nCmdShow)
 {
     WNDCLASSEX wc;
     HWND hwnd;
@@ -504,15 +506,15 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance,
     wc.lpszMenuName = NULL;
     wc.lpszClassName = g_szClassName;
     wc.hIconSm = static_cast<HICON>(LoadImageW(
-        hInstance,                          // Module handle
-        MAKEINTRESOURCEW(IDI_BS),		    // Resource to load
-        IMAGE_ICON,						    // Image type
-        0, 0,							    // Size
-        LR_SHARED | LR_DEFAULTSIZE));       // Load flags
-    if (!RegisterClassEx(&wc))              // If the registration fails, you kinda done goofed
+        hInstance,                    // Module handle
+        MAKEINTRESOURCEW(IDI_BS),     // Resource to load
+        IMAGE_ICON,                   // Image type
+        0, 0,                         // Size
+        LR_SHARED | LR_DEFAULTSIZE)); // Load flags
+    if (!RegisterClassEx(&wc))        // If the registration fails, you kinda done goofed
     {
         MessageBox(NULL, L"Window Registration Failed!", L"Error!",
-            MB_ICONEXCLAMATION | MB_OK);
+                   MB_ICONEXCLAMATION | MB_OK);
         return 0;
     }
 
@@ -534,7 +536,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance,
     if (!RegisterClassEx(&wcBoard))
     {
         MessageBox(NULL, L"Board Window Registration Failed!", L"Error!", MB_ICONEXCLAMATION | MB_OK);
-        return 0;                  
+        return 0;
     }
 
     GetCurrentDirectoryW(MAX_PATH_LENGTH, iniFilePath);
@@ -543,11 +545,11 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance,
 
     wchar_t difficulty[10];
     GetPrivateProfileString(L"Settings",
-        L"Difficulty",
-        L"Medium",
-        difficulty,
-        sizeof(difficulty) / sizeof(wchar_t),
-        iniFilePath);
+                            L"Difficulty",
+                            L"Medium",
+                            difficulty,
+                            sizeof(difficulty) / sizeof(wchar_t),
+                            iniFilePath);
 
     if (wcscmp(difficulty, L"Easy") == 0)
     {
@@ -574,8 +576,8 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance,
     RECT rect;
     rect.left = 0;
     rect.top = 0;
-    rect.right = boardWidth;        
-    rect.bottom = boardHeight;    
+    rect.right = boardWidth;
+    rect.bottom = boardHeight;
 
     AdjustWindowRectEx(&rect, WS_OVERLAPPED | WS_CAPTION, FALSE, 0);
 
@@ -593,16 +595,16 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance,
     mainHwnd = hwnd;
 
     HWND hwndPlayerBoard = CreateWindowEx(
-        0,                                  // No extended styles
-        L"BoardWindowClass",                // Class name
-        L"BATTLESHIPS - MY",                // Window title
-        WS_OVERLAPPED,                      // Style
-        10, 100,                            // Position x, y
-        totalWidth, totalHeight,            // Width, height
-        hwnd,                               // Parent window
-        NULL,                               // No menus
-        hInstance,                          // Instance handle
-        NULL);                              // No additional parameters
+        0,                       // No extended styles
+        L"BoardWindowClass",     // Class name
+        L"BATTLESHIPS - MY",     // Window title
+        WS_OVERLAPPED,           // Style
+        10, 100,                 // Position x, y
+        totalWidth, totalHeight, // Width, height
+        hwnd,                    // Parent window
+        NULL,                    // No menus
+        hInstance,               // Instance handle
+        NULL);                   // No additional parameters
 
     if (!hwndPlayerBoard)
     {
@@ -611,16 +613,16 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance,
     }
 
     HWND hwndPCBoard = CreateWindowEx(
-        0,                                  // No extended styles
-        L"BoardWindowClass",                // Class name
-        L"BATTLESHIPS - PC",                // Window title
-        WS_OVERLAPPED,                      // Style
-        screenWidth - totalWidth, 100,      // Position x, y
-        totalWidth, totalHeight,            // Width, height
-        hwnd,                               // Parent window
-        NULL,                               // No menus
-        hInstance,                          // Instance handle
-        NULL);                              // No additional parameters
+        0,                             // No extended styles
+        L"BoardWindowClass",           // Class name
+        L"BATTLESHIPS - PC",           // Window title
+        WS_OVERLAPPED,                 // Style
+        screenWidth - totalWidth, 100, // Position x, y
+        totalWidth, totalHeight,       // Width, height
+        hwnd,                          // Parent window
+        NULL,                          // No menus
+        hInstance,                     // Instance handle
+        NULL);                         // No additional parameters
 
     if (!hwndPCBoard)
     {
@@ -638,7 +640,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance,
     if (hwnd == NULL)
     {
         MessageBox(NULL, L"Window Creation Failed!", L"Error!",
-            MB_ICONEXCLAMATION | MB_OK);
+                   MB_ICONEXCLAMATION | MB_OK);
         return 0;
     }
 
